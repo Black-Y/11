@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    <style>
+    	#myCanvas{
+            background: url("bg.jpg");
+            box-shadow: 0 0 2px 2px #666;
+    	}
+		#saveBtn{
+			width: 100px;
+			height: 60px;
+			position: absolute;
+			top: 150px;
+			margin-left: 20px;
+			font-size: 30px;
+		}
+		#clearBtn{
+			width: 100px;
+			height: 60px;
+			position: absolute;
+			top: 250px;
+			margin-left: 20px;
+			font-size: 30px;
+		}
+		#cvsImg{
+			position: absolute;
+			width: 400px;
+			height: 260px;
+			right: 100px;
+			top: 100px;
+            background: url("bg.jpg");
+		}
+    </style>
+</head>
+<body>
+        <canvas id="myCanvas" width="700px" height="400px"></canvas>
+        <button id="saveBtn" >保存</button>
+        <button id="clearBtn" >清除</button>
+        <img id="cvsImg" src="">
+    <script>
+         var cvs=document.getElementById("myCanvas");
+         var ctx=cvs.getContext("2d");
+         var startX,startY;
+       	 var startDraw=false;
+         function getStartPosition(e){
+         	 startDraw=true;
+             var e=e||window.event;
+             startX=e.clientX- this.offsetLeft;
+             startY=e.clientY- this.offsetTop;
+             //console.log("点击："+startX +","+startY);
+         }
+         function endDraw(){
+         	startDraw=false;
+         }
+        function draw(e){
+        	if(startDraw){
+	           var e=e||window.event;
+	           var moveX=e.clientX - this.offsetLeft;
+	           var moveY=e.clientY - this.offsetTop;
+	           console.log("点击："+moveX +","+moveY);
+	           ctx.beginPath();
+	           ctx.lineCap="round";
+	           ctx.lineJoin="round";
+	           ctx.lineWidth=5;
+		       ctx.moveTo(startX,startY);
+	           ctx.lineTo(moveX,moveY);
+		       ctx.strokeStyle = "#fff";
+		       ctx.stroke();  
+	           startX=moveX;
+	           startY=moveY;
+           }
+        }
+         function clear(){
+         	ctx.clearRect(0,0,cvs.width,cvs.height);
+         }
+         function saveImg(){
+         	document.getElementById("cvsImg").src=cvs.toDataURL("image/png");
+         }
+         cvs.addEventListener("mousedown",getStartPosition,true);
+         cvs.addEventListener("mousemove",draw);
+         cvs.addEventListener("mouseleave", endDraw); 
+         document.addEventListener("mouseup",endDraw,true);
+         document.getElementById("clearBtn").onclick=function(){
+         	clear();
+         }
+         document.getElementById("saveBtn").onclick=function(){
+         	saveImg();
+         }
+    </script>
+</body>
+</html>
